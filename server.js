@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 //telegrambot
 const TelegramBot = require('node-telegram-bot-api');
 const token = process.env.token;
-const bot = new TelegramBot(token);
+const bot = new TelegramBot(token, {polling: true});
 
 //new 
 app.use(express.json());
@@ -142,15 +142,17 @@ bot.on('callback_query', (query)=>{
       datarr.shift()
       mongo.read(datarr).then((val)=>{
         for(let x of val){
-
           if(x.type==="voice"){
             for(let vo of x.arr){
               bot.sendVoice(chatId, vo)
             }
           }else{
              let mm = mongo.media(x)
+           
+
              let sender = (arr)=>{
                if(arr.length<11){
+                 
                 bot.sendMediaGroup(chatId, arr)
                }else{
                  let arr2 = arr.splice(10);
