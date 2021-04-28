@@ -11,9 +11,9 @@ const token = process.env.token;
 const bot = new TelegramBot(token);
 
 //new 
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(
-  bodyParser.urlencoded({
+  express.urlencoded({
     extended: true
   })
 );
