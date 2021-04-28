@@ -138,7 +138,7 @@ bot.on('callback_query', (query)=>{
           bot.editMessageReplyMarkup({inline_keyboard :value},{chat_id: chatId, message_id: msgId})
         })
     }else if(datarr.length === 4){
-      console.log(query.from.first_name, query.from.last_name)
+      console.log("username  " + query.from.first_name, query.from.last_name)
       datarr.shift()
       mongo.read(datarr).then((val)=>{
         for(let x of val){
