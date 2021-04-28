@@ -13,7 +13,9 @@ const bot = new TelegramBot(token);
 //new 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-
+  app.get('/', (req, res)=>{
+    res.send("hello working")
+  })
 app.post('/bot' , (req, res) => {
   bot.processUpdate(req.body);
   res.sendStatus(200);
