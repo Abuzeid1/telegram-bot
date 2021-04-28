@@ -17,10 +17,9 @@ app.use(
     extended: true
   })
 );
-  app.get('/', (req, res)=>{
-    res.send("hello working")
-  })
+ 
 app.post('/bot' , (req, res) => {
+  res.set('Cache-control', 'public, max-age=86400')
   bot.processUpdate(req.body);
   res.sendStatus(200);
 });
