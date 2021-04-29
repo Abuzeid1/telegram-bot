@@ -82,10 +82,11 @@ bot.on('callback_query', (query)=>{
         
         mongo.write(datarr, files).then((val)=>{
           if(!val){bot.sendMessage(chatId, "file already exist")}else{
-            datarr.pop()
-            datarr.unshift("add")
+            let mo = datarr.slice(0)
+            mo.pop()
+            mo.unshift("add")
             bot.sendMessage(chatId, "Done it will take some time untill files appear",
-             {reply_markup: {inline_keyboard :[[{text: "add one more", callback_data: datarr.toString()}],
+             {reply_markup: {inline_keyboard :[[{text: "add one more", callback_data: mo.toString()}],
             [{text: "cansel", callback_data: "noanswer"}]]}})
           }
         })

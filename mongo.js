@@ -6,6 +6,14 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
 });
 
+let con =  async ()=>{
+  if (client.isConnected()){
+
+  }else{
+     await client.connect()
+  }
+}
+
 
 module.exports.inline = (com, arr, div)=>{
   arr.sort()
@@ -66,7 +74,7 @@ module.exports.cmedia =(arr)=>{
 
 module.exports.list =async (com, datarr)=>{
   
-    await client.connect();
+    await con()
   const db = client.db(datarr[0]);
     //nums
   if(datarr[1]){
@@ -83,14 +91,13 @@ module.exports.list =async (com, datarr)=>{
 //add new document
 module.exports.write = async(datarr, files) => {
   
-    await client.connect();
+    await con()
     const db =   client.db(datarr[0]);
     const dbco =  db.collection(datarr[1]);
     let doc =await  dbco.findOne({_id: datarr[2]})
     
     if(!doc){
       await dbco.insertOne({_id: datarr[2],arr: files})
-    
       await this.new(datarr).then()
       return true
     }else{
@@ -104,7 +111,7 @@ module.exports.write = async(datarr, files) => {
 
 module.exports.new= async(xmo)=>{
   
-  await client.connect()
+  await con()
   const db =   client.db("new");
   const dbco =  db.collection("new");
   let farr = []
@@ -115,7 +122,9 @@ module.exports.new= async(xmo)=>{
     for(let n of doc.arr){
       let x = n.toString()
       farr.push([{text: x.replaceAll(",", " "), callback_data:"get," +x}])
-    }return farr
+    }
+    farr.push([{text: "<<back", callback_data:"get"}])
+    return farr
   }
   else{
     
@@ -123,15 +132,13 @@ module.exports.new= async(xmo)=>{
       dbco.updateOne({_id: "new"},{$push: {arr:{$each: [xmo],$position: 0}}})
       return
       }
-  
-  
 }
 
 
 
 module.exports.permission =async(id, arr)=>{
   
-  await client.connect();
+  await con()
   const db = client.db("permission");
   const dbco =  db.collection(id.toString());
   const doc = await dbco.findOne({_id: arr[0]});
@@ -148,7 +155,7 @@ module.exports.permission =async(id, arr)=>{
 //granting permission
 
 module.exports.grantpermission = async(id , arr)=>{
-  await client.connect();
+  await con()
   const db = client.db("permission");
   const dbco =  db.collection(id.toString());
   const doc = await dbco.findOne({_id: arr[0]});
@@ -171,7 +178,7 @@ module.exports.start =(com)=>{
 
 module.exports.count=async (arr)=>{
  try {
-  await client.connect();
+  await con();
   const db = await client.db(arr[0]);
   const dbco =  db.collection(arr[1]);
   let c = await dbco.countDocuments()
@@ -183,7 +190,7 @@ module.exports.count=async (arr)=>{
 
 
 module.exports.copy = async(arr, files, id)=>{
-  await client.connect();
+  await con();
   const db =  client.db("copy");
     const dbco = db.collection(id.toString())
     if(! await dbco.findOne({arr: arr})){
@@ -195,7 +202,7 @@ module.exports.copy = async(arr, files, id)=>{
  
 
 module.exports.retrieve = async(id , arr)=>{
-  await client.connect();
+  await con();
   const db =  client.db("copy");
   const dbco = db.collection(id.toString())
   let doc = await dbco.findOne({arr: arr})
@@ -204,7 +211,7 @@ module.exports.retrieve = async(id , arr)=>{
 
 module.exports.read = async(arr)=>{
 
-  await client.connect();
+  await con();
   const db =  client.db(arr[0]);
   const dbco = db.collection(arr[1])
   let doc = await dbco.findOne({_id: arr[2]})
