@@ -17,18 +17,19 @@ let con =  async ()=>{
 
 module.exports.inline = (com, arr, div)=>{
   arr.sort()
-  let markup = []
+  let markup = [[]]
   if(!com){com =""}
   if(div){
-    let x = -1;
+    let x = 0;
     let counter = 0;
     for(let n of arr){
-      if(counter%div===0){
+      if(counter%div===0 && counter!=0){
         markup.push([])
         x += 1
       }
       counter += 1
-      markup[x].push({text:n,callback_data:com+","+n})}
+      markup[x].push({text:n,callback_data:com+","+n})
+    }
   }else{
     for(let n of arr){
     markup.push([{text:n,callback_data:com+","+n}])
