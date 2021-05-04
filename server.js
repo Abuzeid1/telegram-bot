@@ -87,7 +87,7 @@ bot.on('callback_query', (query)=>{
             mo.unshift("add")
             bot.sendMessage(chatId, "Done it will take some time untill files appear",
              {reply_markup: {inline_keyboard :[[{text: "add one more", callback_data: mo.toString()}],
-            [{text: "cansel", callback_data: "noanswer"}]]}})
+            [{text: "cancel", callback_data: "noanswer"}]]}})
           }
         })
       }else{
@@ -195,7 +195,7 @@ bot.on('message', (msg)=>{
     calldat.unshift("addfiles")
     calldat = calldat.toString()
     bot.sendMessage(chatId, "push only when all the files have been uploaded", 
-      {reply_markup: {inline_keyboard: [[{text: "confirm", callback_data: calldat}],[{text: "cansel", callback_data: "noanswer"}]],one_time_keyboard: true}}
+      {reply_markup: {inline_keyboard: [[{text: "confirm", callback_data: calldat}],[{text: "cancel", callback_data: "noanswer"}]],one_time_keyboard: true}}
     )
   }
   
@@ -218,7 +218,7 @@ bot.on('message', (msg)=>{
    command[0] = "add"
    command.push(text)
    bot.sendMessage(chatId, "the new one is "+ text,
-   {reply_markup: {inline_keyboard: [[{text: "confirm", callback_data: command.toString()}],[{text: "cansel", callback_data: "noanswer"}]]}})
+   {reply_markup: {inline_keyboard: [[{text: "confirm", callback_data: command.toString()}],[{text: "cancel", callback_data: "noanswer"}]]}})
  }//start command
  else(bot.sendMessage(chatId,"start",{reply_markup: {inline_keyboard: mongo.start("get"),one_time_keyboard: true}}))
   })
