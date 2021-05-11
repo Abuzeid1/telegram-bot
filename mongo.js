@@ -170,7 +170,7 @@ module.exports.grantpermission = async(id , arr)=>{
 }
 
 
-module.exports.start =(com)=>{
+module.exports.start =async (com)=>{
   let subjects = ['bacteriology', 'clinical', 'parasitology', 'pathology', 'pharmacology', 'poultry', 'virology']
   let arr = this.inline(com, subjects, 2)
   if(com ==="get"){arr.push([{text: "add", callback_data: "add"}, {text: "new", callback_data: "new"}])};
