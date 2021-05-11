@@ -185,8 +185,8 @@ bot.on('message', (msg)=>{
    if(text === "/start"){
     bot.sendMessage(chatId,"start",{reply_markup: {inline_keyboard: mongo.start("get"),one_time_keyboard: true}})
 }
-else if(command){
-  if(command[0]=== "add" && command.length === 4){
+else 
+  if(command != undefined && command[0]=== "add" && command.length === 4){
     msd = msg.message_id;
   
     if(filearr.length===0){
@@ -214,14 +214,14 @@ else if(command){
        filearr.push([msg.voice.file_id, "voice"])
      }
     
-  }else if(command[0]==="addx"){
+  }else if(command != undefined && command[0]==="addx"){
     
     command[0] = "add"
     command.push(text)
     bot.sendMessage(chatId, "the new one is "+ text,
     {reply_markup: {inline_keyboard: [[{text: "confirm", callback_data: command.toString()}],[{text: "cancel", callback_data: "noanswer"}]]}})
   }
-}
+
  //start command
  else(bot.sendMessage(chatId,"start",{reply_markup: {inline_keyboard: mongo.start("get"),one_time_keyboard: true}}))
   })
