@@ -122,7 +122,7 @@ bot.on('callback_query', (query)=>{
 
   }else if(datarr[0]==="noanswer"){
      bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId});
-     
+     filearr = []
   }else if(datarr[0]==="addx"){
      bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId})
      bot.sendMessage(chatId, "send the new one name")
