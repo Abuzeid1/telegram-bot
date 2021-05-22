@@ -183,7 +183,7 @@ bot.on('message', (msg)=>{
   
   
    if(text === "/start"){
-    bot.sendMessage(chatId,"start",{reply_markup: {inline_keyboard: mongo.start("get"),one_time_keyboard: true}})
+    bot.sendMessage(chatId," addممكن تضيفه محاضرات او اي داتا من خلال",{reply_markup: {inline_keyboard: mongo.start("get"),one_time_keyboard: true}})
 }
 else 
   if(command != undefined && command[0]=== "add" && command.length === 4){
