@@ -25,7 +25,7 @@ app.post('/bot' , (req, res) => {
 });
 
 // command global variable 
-var command ;
+let user = {};
 var filearr = []
 let msd;
 //(query)
@@ -37,7 +37,8 @@ bot.on('callback_query', (query)=>{
   const datarr = data.split(",")
 
   if (datarr[0]==="add" || datarr[0]=== "addx"){
-    command = datarr
+    user[chatId] = datarr
+    
   }
   
   
@@ -183,7 +184,10 @@ bot.on('message', (msg)=>{
    
   const chatId = msg.chat.id
   const text = msg.text;
-  
+  let command
+  if(user != {}){
+    command = user[chatId]
+  }
   
    if(text === "/start"){
     bot.sendMessage(chatId," addممكن تضيفه محاضرات او اي داتا من خلال",{reply_markup: {inline_keyboard: mongo.start("get"),one_time_keyboard: true}})
