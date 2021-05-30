@@ -36,7 +36,10 @@ bot.on('callback_query', (query)=>{
   let msgId = query.message.message_id
   const datarr = data.split(",")
   
-  command = datarr
+  if (datarr[0]==="add" || datarr[0]=== "addx"){
+    command = datarr
+  }
+  
   
   if(data ==="0" || data==="get"){bot.editMessageReplyMarkup({inline_keyboard : mongo.start("get")},{chat_id: chatId, message_id: msgId})
   }//new button
