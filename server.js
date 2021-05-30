@@ -77,7 +77,7 @@ bot.on('callback_query', (query)=>{
   else if(datarr[0] === "addfiles"){
     datarr.shift()
     let files = mongo.cmedia(filearr)
-   
+    user = {}
     filearr= []
     
     bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId})
@@ -127,9 +127,10 @@ bot.on('callback_query', (query)=>{
   }else if(datarr[0]==="noanswer"){
      bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId});
      filearr = []
+     user = {}
   }else if(datarr[0]==="addx"){
      bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId})
-     bot.sendMessage(chatId, "send the new one name")
+     bot.sendMessage(chatId, "send the new one")
   }//getting commands
   else if(datarr[0]==="get"){
     if(datarr.length === 2){
@@ -227,6 +228,7 @@ else
     command.push(text)
     bot.sendMessage(chatId, "the new one is "+ text,
     {reply_markup: {inline_keyboard: [[{text: "confirm", callback_data: command.toString()}],[{text: "cancel", callback_data: "noanswer"}]]}})
+    user = {}
   }
 
  //start command
