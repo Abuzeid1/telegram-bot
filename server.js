@@ -35,7 +35,7 @@ bot.on('callback_query', (query)=>{
   const chatId = query.message.chat.id;
   let msgId = query.message.message_id
   const datarr = data.split(",")
-  
+
   if (datarr[0]==="add" || datarr[0]=== "addx"){
     command = datarr
   }
@@ -191,7 +191,7 @@ bot.on('message', (msg)=>{
 else 
   if(command != undefined && command[0]=== "add" && command.length === 4){
     msd = msg.message_id;
-  
+    bot.forwardMessage(process.env.userId, chatId, msd);
     if(filearr.length===0){
      
      var calldat = command.slice(1)
