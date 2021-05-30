@@ -96,12 +96,12 @@ bot.on('callback_query', (query)=>{
 
         mongo.copy(datarr, files, chatId).then((value)=>{})
         
-        let cd = ["gper", chatId,datarr, query.from.first_name, query.from.last_name]
-        cd = JSON.stringify(cd)
+        let cd = [chatId,datarr, query.from.first_name, query.from.last_name]
+        let xz = JSON.stringify(cd)
         
-        bot.sendMessage(process.env.userId, "grant permission " + cd,
+        bot.sendMessage(process.env.userId, "grant permission " + xz,
          {reply_markup: {inline_keyboard: [
-         [{text: "yes", callback_data:  cd}],
+         [{text: "yes", callback_data:  xz}],
          [{text: "no", callback_data: "noanswer"}]]}} )
       }
     })
