@@ -125,7 +125,7 @@ bot.on('callback_query', (query)=>{
           }
         }
 
-        let cd = ["gper" + chatId,datarr, query.from.first_name, query.from.last_name]
+        let cd = ["gper" , chatId,datarr, query.from.first_name, query.from.last_name]
         let xz = JSON.stringify(cd)
         
         bot.sendMessage(process.env.userId, "grant permission " + xz,
