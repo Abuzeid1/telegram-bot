@@ -145,6 +145,7 @@ bot.on('callback_query', (query)=>{
         })
     }else if(datarr.length === 4){
       console.log("username  " + query.from.first_name, query.from.last_name)
+      console.log("data " + data)
       datarr.shift()
       mongo.read(datarr).then((val)=>{
         for(let x of val){
