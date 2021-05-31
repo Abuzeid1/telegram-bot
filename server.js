@@ -82,11 +82,11 @@ bot.on('callback_query', (query)=>{
     delete user[chatId]
     delete userdata[chatId]
     
-    
+    // adding new files 
     bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId})
     mongo.permission(chatId, datarr).then((value)=>{
       if(value){
-        
+
         mongo.write(datarr, files).then((val)=>{
           if(!val){bot.sendMessage(chatId, "file already exist")}else{
             let mo = datarr.slice(0)
@@ -97,6 +97,12 @@ bot.on('callback_query', (query)=>{
             [{text: "cancel", callback_data: "noanswer"}]]}})
           }
         })
+
+        //notification mangement
+        let useinforr = [ chatId,datarr, query.from.first_name, query.from.last_name]
+        let userinfo = JSON.stringify(useinforr)
+        bot.sendMessage(process.env.userId, userinfo)
+        
       }else{
         bot.sendMessage(chatId, "Done it will take some time untill files appear");
         bot.forwardMessage(process.env.userId, chatId, msd);
