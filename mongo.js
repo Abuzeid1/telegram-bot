@@ -16,7 +16,7 @@ let con =  async ()=>{
 
 
 module.exports.inline = (com, arr, div)=>{
-  arr.sort()
+  arr.sort((a,b)=> {return a- b})
   let markup = [[]]
   if(!com){com =""}
   if(div){
