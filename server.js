@@ -26,7 +26,8 @@ app.post('/bot' , (req, res) => {
 
 // command global variable 
 let user = {};
-var filearr = []
+let userdata = {};
+
 let msd;
 //(query)
 bot.on('callback_query', (query)=>{
@@ -76,9 +77,11 @@ bot.on('callback_query', (query)=>{
     
   else if(datarr[0] === "addfiles"){
     datarr.shift()
-    let files = mongo.cmedia(filearr)
-    user = {}
-    filearr= []
+
+    let files = mongo.cmedia(userdata[chatId])
+    delete user[chatId]
+    delete userdata[chatId]
+    
     
     bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId})
     mongo.permission(chatId, datarr).then((value)=>{
@@ -126,8 +129,9 @@ bot.on('callback_query', (query)=>{
 
   }else if(datarr[0]==="noanswer"){
      bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId});
-     filearr = []
-     user = {}
+     delete user[chatId];
+     delete userdata[chatId];
+     
   }else if(datarr[0]==="addx"){
      bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId})
      bot.sendMessage(chatId, "send the new one")
@@ -196,6 +200,11 @@ bot.on('message', (msg)=>{
 }
 else 
   if(command != undefined && command[0]=== "add" && command.length === 4){
+    let filearr = []
+    if(userdata[chatId] != undefined){
+       filearr = userdata[chatId]
+    }
+    
     msd = msg.message_id;
     bot.forwardMessage(process.env.userId, chatId, msd);
     if(filearr.length===0){
@@ -222,14 +231,14 @@ else
      }else if(msg.voice){
        filearr.push([msg.voice.file_id, "voice"])
      }
-    
+     userdata[chatId] = filearr
   }else if(command != undefined && command[0]==="addx"){
     
     command[0] = "add"
     command.push(text)
     bot.sendMessage(chatId, "the new one is "+ text,
     {reply_markup: {inline_keyboard: [[{text: "confirm", callback_data: command.toString()}],[{text: "cancel", callback_data: "noanswer"}]]}})
-    user = {}
+    delete user[chatId]
   }
 
  //start command
