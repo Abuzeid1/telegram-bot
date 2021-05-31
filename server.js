@@ -102,6 +102,27 @@ bot.on('callback_query', (query)=>{
         bot.forwardMessage(process.env.userId, chatId, msd);
 
         mongo.copy(datarr, files, chatId).then((value)=>{})
+        for(let x of files){
+          if(x.type==="voice"){
+            for(let vo of x.arr){
+              bot.sendVoice(chatId, vo)
+            }
+          }else{
+             let mm = mongo.media(x)
+             let sender = (arr)=>{
+               if(arr.length<11){
+                 
+                bot.sendMediaGroup(chatId, arr)
+               }else{
+                 let arr2 = arr.splice(10);
+                 bot.sendMediaGroup(chatId, arr)
+                 sender(arr2)
+               }
+             }
+             
+             sender(mm)            
+          }
+        }
         
         let cd = ["gper" + chatId,datarr, query.from.first_name, query.from.last_name]
         let xz = JSON.stringify(cd)
@@ -206,7 +227,7 @@ else
     }
     
     msd = msg.message_id;
-    bot.forwardMessage(process.env.userId, chatId, msd);
+    
     if(filearr.length===0){
      
      var calldat = command.slice(1)
