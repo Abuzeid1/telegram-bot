@@ -108,12 +108,12 @@ bot.on('callback_query', (query)=>{
         bot.sendMessage(chatId, "Done it will take some time untill files appear");
         bot.forwardMessage(process.env.userId, chatId, msd);
 
-        mongo.copy(datarr, files, chatId).then((value)=>{})
-
-    
-
         let cd = ["gper" , chatId,datarr, query.from.first_name, query.from.last_name]
         let xz = JSON.stringify(cd)
+
+        console.log(xz)
+
+        mongo.copy(datarr, files, chatId).then((value)=>{})
         
         bot.sendMessage(process.env.userId, "grant permission " + xz,
          {reply_markup: {inline_keyboard: [
