@@ -106,19 +106,21 @@ bot.on('callback_query', (query)=>{
       }else{
         // asking for permission
         bot.sendMessage(chatId, "Done it will take some time untill files appear");
-        bot.forwardMessage(process.env.userId, chatId, msd);
+        
 
         let cd = ["gper" , chatId,datarr, query.from.first_name, query.from.last_name]
         let xz = JSON.stringify(cd)
-
+        bot.forwardMessage(process.env.userId, chatId, msd);
         console.log(xz)
 
-        mongo.copy(datarr, files, chatId).then((value)=>{})
+        
         
         bot.sendMessage(process.env.userId, "grant permission " + xz,
          {reply_markup: {inline_keyboard: [
          [{text: "yes", callback_data:  xz}],
          [{text: "no", callback_data: "noanswer"}]]}} )
+
+         mongo.copy(datarr, files, chatId).then((value)=>{})
 
          for(let x of files){
           if(x.type==="voice"){
