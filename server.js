@@ -111,7 +111,7 @@ bot.on('callback_query', (query)=>{
         let cd = ["g" , chatId,datarr]
         let xz = JSON.stringify(cd)
         bot.forwardMessage(process.env.userId, chatId, msd);
-        console.log(xz)
+        
 
         
         
