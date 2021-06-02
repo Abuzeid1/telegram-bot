@@ -115,7 +115,7 @@ bot.on('callback_query', (query)=>{
 
         
         
-        bot.sendMessage(process.env.userId, "grant permission " + xz + query.from.first_name + query.from.last_name,
+        bot.sendMessage(process.env.userId, "grant permission " + xz + query.from.first_name +"  "+ query.from.last_name,
          {reply_markup: {inline_keyboard: [
          [{text: "yes", callback_data:  xz}],
          [{text: "no", callback_data: "noanswer"}]]}} )
