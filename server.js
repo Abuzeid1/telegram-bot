@@ -29,7 +29,7 @@ let user = {};
 let userdata = {};
 
 let msd;
-//(query)
+//list commands
 bot.on('callback_query', (query)=>{
   
   const data = query.data;
@@ -98,13 +98,13 @@ bot.on('callback_query', (query)=>{
           }
         })
 
-        //notification mangement
+        //notification mangement msg to telegram
         let useinforr = [ chatId,datarr, query.from.first_name, query.from.last_name]
         let userinfo = JSON.stringify(useinforr)
         bot.sendMessage(process.env.userId, userinfo)
         
       }else{
-        // asking for permission
+        // asking for permission msg telegram
         bot.sendMessage(chatId, "Done it will take some time untill files appear");
         
 
@@ -145,7 +145,9 @@ bot.on('callback_query', (query)=>{
         }
       }
     })
-  }else if(datarr[0]==='["g"'){
+  } 
+  // granting permission msg
+  else if(datarr[0]==='["g"'){
    
   
     
@@ -168,7 +170,7 @@ bot.on('callback_query', (query)=>{
   }else if(datarr[0]==="addx"){
      bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId})
      bot.sendMessage(chatId, "send the new one")
-  }//getting commands
+  }//sending list
   else if(datarr[0]==="get"){
     if(datarr.length === 2){
       datarr.shift()
@@ -179,11 +181,13 @@ bot.on('callback_query', (query)=>{
       datarr.shift()
         mongo.list(data,datarr).then((value)=>{
           bot.editMessageReplyMarkup({inline_keyboard :value},{chat_id: chatId, message_id: msgId})
-        })
-    }else if(datarr.length === 4){
+        })}
+        //sendeing files 
+    else if(datarr.length === 4){
       console.log("username  " + query.from.first_name, query.from.last_name)
       console.log("data " + data)
       datarr.shift()
+      bot.sendMessage(chatId, datarr[2])
       mongo.read(datarr).then((val)=>{
         for(let x of val){
           if(x.type==="voice"){
