@@ -27,7 +27,7 @@ let msd;
 //start function 
 let start = (chatId, msgId)=>{
   let arr = mongo.inline("get,41", variable.subject["41"])
-  arr.push([[{text:"3rd 2nd", callback_data:"get,32" }]])
+  arr.push([{text:"3rd 2nd", callback_data:"get,32" }])
   // console.log(arr)
   if(msgId){bot.editMessageReplyMarkup({inline_keyboard : arr},{chat_id: chatId, message_id: msgId})
   }else{
@@ -198,7 +198,7 @@ bot.on('message', (msg)=>{
   //receiving files
   }else if(text === "/latest"){
     mongo.new().then((val)=>{
-      bot.sendMessage(chatId,"Latest", {reply_markup: {inline_keyboard: val, chat_id: chatId, message_id: msgId}})
+      bot.sendMessage(chatId,"Latest", {reply_markup: {inline_keyboard: val}})
     })
   }else if(text === "/add"){
     bot.sendMessage(chatId,"add", {reply_markup:{ inline_keyboard : mongo.inline("add,41", variable.subject[41]),chat_id: chatId, message_id: msgId}})
