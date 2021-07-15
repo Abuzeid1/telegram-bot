@@ -2,34 +2,41 @@ require('dotenv').config()
 
 let mongo = require("./mongo.js")
 const express = require("express");
-const app = express();
-const bodyParser = require('body-parser'); 
-
-//telegrambot
 const TelegramBot = require('node-telegram-bot-api');
+const variable = require("./variable.js")
 const token = process.env.token;
 const bot = new TelegramBot(token);
-
-//new 
+const app = express();
 app.use(express.json());
-app.use(
-  express.urlencoded({
-    extended: true
-  })
-);
+app.use(express.urlencoded({extended: true}));
  
+// respond to api request
 app.post('/bot' , (req, res) => {
-  res.set('Cache-control', 'public, max-age=86400')
   bot.processUpdate(req.body);
   res.sendStatus(200);
 });
 
-// command global variable 
+// global variables
 let user = {};
 let userdata = {};
-
 let msd;
-//list commands
+
+
+
+//common used functions
+//start function 
+let start = (chatId, msgId)=>{
+  let inline = mongo.inline("get,41", variable.subject["41"]).push([[{text:"3rd 2nd", callback_data:"get,32" }]])
+  if(msgId){bot.editMessageReplyMarkup({inline_keyboard : inline},{chat_id: chatId, message_id: msgId})
+  }else{
+    bot.sendMessage(chatId, {reply_markup:{inline_keyboard: inline}})
+  }
+}
+//empty markup function
+let empty = (chatId, msgId) =>{
+  bot.editMessageReplyMarkup({inline_keyboard : [[]]},{chat_id: chatId, message_id: msgId})
+}
+//list commands 
 bot.on('callback_query', (query)=>{
   
   const data = query.data;
@@ -37,68 +44,53 @@ bot.on('callback_query', (query)=>{
   let msgId = query.message.message_id
   const datarr = data.split(",")
 
-  if (datarr[0]==="add" || datarr[0]=== "addx"){
-    user[chatId] = datarr
-    
-  }
-  
-  
-  if(data ==="0" || data==="get"){bot.editMessageReplyMarkup({inline_keyboard : mongo.start("get")},{chat_id: chatId, message_id: msgId})
-  }//new button
-  else if(data=== "new"){
-    mongo.new().then((val)=>{
-      
-      bot.editMessageReplyMarkup({inline_keyboard: val},{chat_id: chatId, message_id: msgId})
-    })
-  }//add commands
-  else if(data==="add"){
-    bot.editMessageReplyMarkup({inline_keyboard : mongo.start(data)},{chat_id: chatId, message_id: msgId})
-  }else if(datarr[0]==="add"){
-      if(datarr.length===2){
+  //user 
+  if (datarr[0]==="add" || datarr[0]=== "addx"){user[chatId] = datarr}
+
+  //start command
+  if(data ==="0" || data==="get"){start(chatId, msgId)}
+
+  else if(datarr[0]==="add"){
+      if(datarr.length===3){
         datarr.shift()
-        
         mongo.list(data,datarr).then((value)=>{
           value.splice(value.length-1, (0), [{text:"another", callback_data:"addx," + datarr.toString()}])
-         
           bot.editMessageReplyMarkup({inline_keyboard :value},{chat_id: chatId, message_id: msgId})
         })
-      
-      }else if(datarr.length===3){
+      //add number
+      }else if(datarr.length===4){
         datarr.shift()
         mongo.count(datarr).then((value)=>{
           let mark = mongo.inline(data, [value.toString()])
           mark.splice(mark.length-1, (0), [{text:"another", callback_data:"addx," + datarr.toString()}])
           bot.editMessageReplyMarkup({inline_keyboard :mark},{chat_id: chatId, message_id: msgId})
         })
-      }else if(datarr.length===4){
-      bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId});
+        //add file
+      }else if(datarr.length===5){
+      empty(chatId, msgId)
       bot.sendMessage(chatId, "Send your files")
     }}
-    
+  // adding files to database
   else if(datarr[0] === "addfiles"){
     datarr.shift()
-
     let files = mongo.cmedia(userdata[chatId])
     delete user[chatId]
     delete userdata[chatId]
-    
-    // adding new files 
     bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId})
+    // permission check
+
     mongo.permission(chatId, datarr).then((value)=>{
       if(value){
-
         mongo.write(datarr, files).then((val)=>{
-          if(!val){bot.sendMessage(chatId, "file already exist")}else{
             let mo = datarr.slice(0)
             mo.pop()
             mo.unshift("add")
             bot.sendMessage(chatId, "Done it will take some time untill files appear",
              {reply_markup: {inline_keyboard :[[{text: "add one more", callback_data: mo.toString()}],
             [{text: "cancel", callback_data: "noanswer"}]]}})
-          }
-        })
+          })
 
-        //notification mangement msg to telegram
+        //notification  msg to telegram
         let useinforr = [ chatId,datarr, query.from.first_name, query.from.last_name]
         let userinfo = JSON.stringify(useinforr)
         bot.sendMessage(process.env.userId, userinfo)
@@ -106,171 +98,132 @@ bot.on('callback_query', (query)=>{
       }else{
         // asking for permission msg telegram
         bot.sendMessage(chatId, "Done it will take some time untill files appear");
-        
-
         let cd = ["g" , chatId,datarr]
         let xz = JSON.stringify(cd)
         bot.forwardMessage(process.env.userId, chatId, msd);
-        
-
-        
-        
         bot.sendMessage(process.env.userId, "grant permission " + xz + query.from.first_name +"  "+ query.from.last_name,
          {reply_markup: {inline_keyboard: [
          [{text: "yes", callback_data:  xz}],
          [{text: "no", callback_data: "noanswer"}]]}} )
-
          mongo.copy(datarr, files, chatId).then((value)=>{})  
 
          for(let x of files){
           if(x.type==="voice"){
             for(let vo of x.arr){
-              bot.sendVoice(process.env.userId, vo)
-            }
+              bot.sendVoice(process.env.userId, vo)}
+
           }else{
              let mm = mongo.media(x)
              let sender = (arr)=>{
                if(arr.length<11){
-                 
                 bot.sendMediaGroup(process.env.userId, arr)
+
                }else{
                  let arr2 = arr.splice(10);
                  bot.sendMediaGroup(process.env.userId, arr)
-                 sender(arr2)
-               }
-             }
-             
-             sender(mm)            
-          }
-        }
-      }
-    })
-  } 
-  // granting permission msg
+                 sender(arr2)}}
+            sender(mm)}}}
+    })} 
+
+  // granting permission command
   else if(datarr[0]==='["g"'){
-   
-  
-    
-    bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId});
+    empty(chatId, msgId)
     let x = JSON.parse(data)
     x.shift()
-  
-    //datarr.shift()
     let pid = x[0];
     let m  = x[1]
-    
     mongo.grantpermission(pid, m).then((value)=>{});
-    
-
+    //no answer reply 
   }else if(datarr[0]==="noanswer"){
-     bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId});
+     empty(chatId, msgId)
      delete user[chatId];
      delete userdata[chatId];
      
   }else if(datarr[0]==="addx"){
-     bot.editMessageReplyMarkup({inline_keyboard :[[]]},{chat_id: chatId, message_id: msgId})
+     empty(chatId, msgId)
      bot.sendMessage(chatId, "send the new one")
-  }//sending list
+  }//send list
   else if(datarr[0]==="get"){
-    if(datarr.length === 2){
-      datarr.shift()
-        mongo.list(data,datarr).then((value)=>{
-          bot.editMessageReplyMarkup({inline_keyboard :value},{chat_id: chatId, message_id: msgId})
-        })
-    }else if(datarr.length === 3){
-      datarr.shift()
-        mongo.list(data,datarr).then((value)=>{
-          bot.editMessageReplyMarkup({inline_keyboard :value},{chat_id: chatId, message_id: msgId})
-        })}
-        //sendeing files 
-    else if(datarr.length === 4){
+     if(datarr.length === 5){
       console.log("username  " + query.from.first_name, query.from.last_name)
       console.log("data " + data)
       datarr.shift()
-      bot.sendMessage(chatId, datarr[2])
+      bot.sendMessage(chatId, datarr[3])
+
       mongo.read(datarr).then((val)=>{
+
         for(let x of val){
           if(x.type==="voice"){
             for(let vo of x.arr){
-              bot.sendVoice(chatId, vo)
-            }
+              bot.sendVoice(chatId, vo)}
+
           }else{
              let mm = mongo.media(x)
-           
-
              let sender = (arr)=>{
-               if(arr.length<11){
-                 
-                bot.sendMediaGroup(chatId, arr)
+               if(arr.length<11){bot.sendMediaGroup(chatId, arr)
                }else{
                  let arr2 = arr.splice(10);
                  bot.sendMediaGroup(chatId, arr)
-                 sender(arr2)
-               }
-             }
-             
-             sender(mm)            
-          }
-
-         
-        }
-      })
+                 sender(arr2)}}
+             sender(mm)}}})
+      return }
     }
-  }
-  
- 
-})
+    datarr.shift()
+        mongo.list(data,datarr).then((value)=>{
+          bot.editMessageReplyMarkup({inline_keyboard :value},{chat_id: chatId, message_id: msgId})
+        })
+    })
 
 
 
+
+
+
+
+
+
+// on msg reply
 bot.on('message', (msg)=>{ 
-   
   const chatId = msg.chat.id
   const text = msg.text;
   let command
-  if(user != {}){
-    command = user[chatId]
-  }
+
+  if(user != {}){command = user[chatId]}
   
-   if(text === "/start"){
-    bot.sendMessage(chatId," addممكن تضيفه محاضرات او اي داتا من خلال",{reply_markup: {inline_keyboard: mongo.start("get"),one_time_keyboard: true}})
-}
-else 
-  if(command != undefined && command[0]=== "add" && command.length === 4){
+  if(text === "/start"){
+   start(chatId)
+  //receiving files
+  }else if(text === "/new"){
+    mongo.new().then((val)=>{
+      bot.sendMessage(chatId,"", {reply_markup: {inline_keyboard: val, chat_id: chatId, message_id: msgId}})
+    })
+  }else if(text === "/add"){
+    bot.sendMessage(chatId,"", {reply_markup:{ inline_keyboard : mongo.start("add,32"),chat_id: chatId, message_id: msgId}})
+  }else if(text === "/info"){ 
+      bot.sendMessage(chatId, "")
+  }
+  else if(command != undefined && command[0]=== "add" && command.length === 5){
     let filearr = []
-    if(userdata[chatId] != undefined){
-       filearr = userdata[chatId]
-    }
-    
+    if(userdata[chatId] != undefined){filearr = userdata[chatId]}
     msd = msg.message_id;
-    
+
     if(filearr.length===0){
-     
      var calldat = command.slice(1)
-     
      calldat.unshift("addfiles")
      calldat = calldat.toString()
      bot.sendMessage(chatId, "push only when all the files have been uploaded", 
-       {reply_markup: {inline_keyboard: [[{text: "confirm", callback_data: calldat}],[{text: "cancel", callback_data: "noanswer"}]],one_time_keyboard: true}}
-     )
-   }
+       {reply_markup: {inline_keyboard: [[{text: "confirm", callback_data: calldat}],
+       [{text: "cancel", callback_data: "noanswer"}]],one_time_keyboard: true}}
+     )}
    
-     if(msg.photo){
-       filearr.push([msg.photo[1].file_id, "photo"]) 
-     }
-     else if(msg.video){
-       filearr.push([msg.video.file_id, "video"])
-     }
-     else if(msg.document){
-       filearr.push([msg.document.file_id, "document"])
-     }else if(msg.audio){
-       filearr.push([msg.audio.file_id, "audio"])
-     }else if(msg.voice){
-       filearr.push([msg.voice.file_id, "voice"])
-     }
+     if(msg.photo){filearr.push([msg.photo[1].file_id, "photo"]) 
+    }else if(msg.video){filearr.push([msg.video.file_id, "video"])
+    }else if(msg.document){filearr.push([msg.document.file_id, "document"])
+    }else if(msg.audio){filearr.push([msg.audio.file_id, "audio"])
+    }else if(msg.voice){filearr.push([msg.voice.file_id, "voice"])}
      userdata[chatId] = filearr
+    //receiving text
   }else if(command != undefined && command[0]==="addx"){
-    
     command[0] = "add"
     command.push(text)
     bot.sendMessage(chatId, "the new one is "+ text,
@@ -279,7 +232,7 @@ else
   }
 
  //start command
- else(bot.sendMessage(chatId,"start",{reply_markup: {inline_keyboard: mongo.start("get"),one_time_keyboard: true}}))
+ else{start(chatId)}
   })
 
 const listener = app.listen(process.env.PORT, () => {
