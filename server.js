@@ -27,7 +27,7 @@ let msd;
 //start function 
 let start = (chatId, msgId)=>{
   let arr = mongo.inline("get,41", variable.subject["41"])
-  arr.push([{text:"3rd 2nd", callback_data:"get,32" }])
+  arr.push([{text:"3rd year 2nd term", callback_data:"get,32" }])
   // console.log(arr)
   if(msgId){bot.editMessageReplyMarkup({inline_keyboard : arr},{chat_id: chatId, message_id: msgId})
   }else{
