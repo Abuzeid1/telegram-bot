@@ -29,7 +29,7 @@ let start = (chatId, msgId)=>{
   let inline = mongo.inline("get,41", variable.subject["41"]).push([[{text:"3rd 2nd", callback_data:"get,32" }]])
   if(msgId){bot.editMessageReplyMarkup({inline_keyboard : inline},{chat_id: chatId, message_id: msgId})
   }else{
-    bot.sendMessage(chatId,"", {reply_markup:{inline_keyboard: inline}})
+    bot.sendMessage(chatId,"Enjoy", {reply_markup:{inline_keyboard: inline}})
   }
 }
 //empty markup function
@@ -193,14 +193,14 @@ bot.on('message', (msg)=>{
   if(text === "/start"){
    start(chatId)
   //receiving files
-  }else if(text === "/new"){
+  }else if(text === "/latest"){
     mongo.new().then((val)=>{
-      bot.sendMessage(chatId,"", {reply_markup: {inline_keyboard: val, chat_id: chatId, message_id: msgId}})
+      bot.sendMessage(chatId,"Latest", {reply_markup: {inline_keyboard: val, chat_id: chatId, message_id: msgId}})
     })
   }else if(text === "/add"){
-    bot.sendMessage(chatId,"", {reply_markup:{ inline_keyboard : mongo.start("add,32"),chat_id: chatId, message_id: msgId}})
+    bot.sendMessage(chatId,"add", {reply_markup:{ inline_keyboard : mongo.start("add,32"),chat_id: chatId, message_id: msgId}})
   }else if(text === "/info"){ 
-      bot.sendMessage(chatId, "")
+      bot.sendMessage(chatId, variable.info)
   }
   else if(command != undefined && command[0]=== "add" && command.length === 5){
     let filearr = []
