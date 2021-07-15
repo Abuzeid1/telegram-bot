@@ -159,7 +159,7 @@ module.exports.permission =async(id, arr)=>{
   const db = client.db("permission");
   const dbco =  db.collection(id.toString());
   const doc = await dbco.findOne({_id: arr[0]});
-  console.log(doc)
+
   if(doc){
     let  check = doc[arr[1]];
     
