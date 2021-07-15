@@ -29,7 +29,7 @@ let start = (chatId, msgId)=>{
   let inline = mongo.inline("get,41", variable.subject["41"]).push([[{text:"3rd 2nd", callback_data:"get,32" }]])
   if(msgId){bot.editMessageReplyMarkup({inline_keyboard : inline},{chat_id: chatId, message_id: msgId})
   }else{
-    bot.sendMessage(chatId, {reply_markup:{inline_keyboard: inline}})
+    bot.sendMessage(chatId,"", {reply_markup:{inline_keyboard: inline}})
   }
 }
 //empty markup function
