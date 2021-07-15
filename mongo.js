@@ -53,7 +53,6 @@ module.exports.inline = (com,arr)=>{
 //buttons of the lists type && number
 
 module.exports.list =async (com, datarr)=>{
-  console.log(datarr  )
   await con()
 const db = client.db(datarr[0]);
 const dbo =  db.collection(datarr[1].toString());
@@ -65,7 +64,6 @@ if(datarr[2]){
   //types
 }else{
   const types = await dbo.find({},{_id:1}).map(function(item){ return item._id; }).toArray();
-  console.log(types)
   return  this.inline(com, types)
 }}
 

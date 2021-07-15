@@ -46,7 +46,7 @@ bot.on('callback_query', (query)=>{
   const chatId = query.message.chat.id;
   let msgId = query.message.message_id
   const datarr = data.split(",")
-  console.log(datarr)
+  
   //user 
   if (datarr[0]==="add" || datarr[0]=== "addx"){user[chatId] = datarr}
 
@@ -164,7 +164,7 @@ bot.on('callback_query', (query)=>{
               bot.sendVoice(chatId, vo)}
 
           }else{
-            console.log("x", x)
+           
              let mm = mongo.media(x)
              let sender = (arr)=>{
                if(arr.length<11){bot.sendMediaGroup(chatId, arr)
