@@ -5,16 +5,16 @@ const express = require("express");
 const TelegramBot = require('node-telegram-bot-api');
 const variable = require("./variable.js")
 const token = process.env.token;
-const bot = new TelegramBot(token);
+const bot = new TelegramBot(token, {polling: true});
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
  
 // respond to api request
-app.post('/bot' , (req, res) => {
-  bot.processUpdate(req.body);
-  res.sendStatus(200);
-});
+// app.post('/bot' , (req, res) => {
+//   bot.processUpdate(req.body);
+//   res.sendStatus(200);
+// });
 
 // global variables
 let user = {};
@@ -46,15 +46,18 @@ bot.on('callback_query', (query)=>{
   const chatId = query.message.chat.id;
   let msgId = query.message.message_id
   const datarr = data.split(",")
-
+  console.log(datarr)
   //user 
   if (datarr[0]==="add" || datarr[0]=== "addx"){user[chatId] = datarr}
 
   //start command
-  if(data ==="0" || data==="get"){start(chatId, msgId)}
+  if(data ==="add" || data==="get,41" || data ==="get"){start(chatId, msgId)}
 
   else if(datarr[0]==="add"){
-      if(datarr.length===3){
+    if(datarr.length===2){
+      bot.editMessageReplyMarkup({inline_keyboard: mongo.inline("add,42", variable.subject["41"])}, {chat_id: chatId, message_id: msgId})
+    }
+      else if(datarr.length===3){
         datarr.shift()
         mongo.list(data,datarr).then((value)=>{
           value.splice(value.length-1, (0), [{text:"another", callback_data:"addx," + datarr.toString()}])
@@ -154,13 +157,14 @@ bot.on('callback_query', (query)=>{
       bot.sendMessage(chatId, datarr[3])
 
       mongo.read(datarr).then((val)=>{
-
+        
         for(let x of val){
           if(x.type==="voice"){
             for(let vo of x.arr){
               bot.sendVoice(chatId, vo)}
 
           }else{
+            console.log("x", x)
              let mm = mongo.media(x)
              let sender = (arr)=>{
                if(arr.length<11){bot.sendMediaGroup(chatId, arr)
@@ -169,12 +173,19 @@ bot.on('callback_query', (query)=>{
                  bot.sendMediaGroup(chatId, arr)
                  sender(arr2)}}
              sender(mm)}}})
-      return }
-    }
-    datarr.shift()
+       }
+       else if(datarr[1]==="32" && datarr.length === 2){
+
+       bot.editMessageReplyMarkup({inline_keyboard :mongo.inline("get,32", variable.subject["32"])},{chat_id: chatId, message_id: msgId})
+      }else{
+        datarr.shift()
         mongo.list(data,datarr).then((value)=>{
           bot.editMessageReplyMarkup({inline_keyboard :value},{chat_id: chatId, message_id: msgId})
         })
+      }
+    
+    }
+    
     })
 
 
@@ -201,7 +212,7 @@ bot.on('message', (msg)=>{
       bot.sendMessage(chatId,"Latest", {reply_markup: {inline_keyboard: val}})
     })
   }else if(text === "/add"){
-    bot.sendMessage(chatId,"add", {reply_markup:{ inline_keyboard : mongo.inline("add,41", variable.subject[41]),chat_id: chatId, message_id: msgId}})
+    bot.sendMessage(chatId,"add", {reply_markup:{ inline_keyboard : mongo.inline("add,41", variable.subject["41"])}})
   }else if(text === "/info"){ 
       bot.sendMessage(chatId, variable.info)
   }

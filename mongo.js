@@ -18,9 +18,9 @@ module.exports.inline = (com,arr)=>{
   let markup = [[]]
   let div 
   if(arr.length>0){div=1}
-  if(arr.length>5){div=2}
-  if(arr.length>10){div=3}
-  if(arr.length>15){div=4}
+  if(arr.length>4){div=2}
+  if(arr.length>8){div=3}
+  if(arr.length>12){div=4}
   if(!com){com =""}
   
     let x = 0;
@@ -53,10 +53,10 @@ module.exports.inline = (com,arr)=>{
 //buttons of the lists type && number
 
 module.exports.list =async (com, datarr)=>{
-  
+  console.log(datarr  )
   await con()
 const db = client.db(datarr[0]);
-const dbo =  db.collection(datarr[1]);
+const dbo =  db.collection(datarr[1].toString());
   //nums
 if(datarr[2]){
   const doc =  await dbo.findOne({_id: datarr[2]})
@@ -101,12 +101,12 @@ module.exports.write = async(datarr, files) => {
     await con()
     const db =   client.db(datarr[0]);
     const dbco =  db.collection(datarr[1]);
-      await dbco.updateOne({_id: datarr[2]},{$push: { [datarr[3]]: files}}, {upsert: true})
+      await dbco.updateOne({_id: datarr[2]},{$set: { [datarr[3]]: files}}, {upsert: true})
       await this.new(datarr).then()
       return true
     
   }
-//  this.write(["47", "10", "6", "13"], [1,2,3,4,5,6,7,8,9,10,11])
+  // this.write(["47", "10", "6", "13"], [8,2,3,4,5,6,7,8,9,10,11])
 //read document
 module.exports.read = async(arr)=>{
   await con();
@@ -161,10 +161,14 @@ module.exports.permission =async(id, arr)=>{
   const db = client.db("permission");
   const dbco =  db.collection(id.toString());
   const doc = await dbco.findOne({_id: arr[0]});
-  
+  console.log(doc)
   if(doc){
     let  check = doc[arr[1]];
-    if(check.indexOf(arr[2]) != -1){return true}
+    
+    if(check){
+      if(check.indexOf(arr[2]) != -1){return true}
+    }
+    
     return false
   }
   return false
@@ -176,8 +180,8 @@ module.exports.count=async (arr)=>{
   const db = await client.db(arr[0]);
   const dbco =  db.collection(arr[1]);
   let doc =await  dbco.findOne({_id: arr[2]})
-  console.log(Object.keys(doc).length)
-  return Object.keys(doc).length
+  if(doc){return Object.keys(doc).length}
+  return "1"
 }
 
 // console.log(this.count(["32", "pharmacology", "Data"]))
