@@ -33,7 +33,7 @@ module.exports.inline = (com,arr)=>{
       counter += 1
       markup[x].push({text:n,callback_data:com+","+n})
     }
-  
+ 
 
   if(com != "get,41"){com = com.split(",")
     com.pop()
@@ -42,6 +42,7 @@ module.exports.inline = (com,arr)=>{
     markup.push([{text:"<< Back",callback_data:com}])}
   return markup
 }
+
 //start menu
 // module.exports.start = (com)=>{
 //     let arr = this.inline(com, variable.subject["32"])

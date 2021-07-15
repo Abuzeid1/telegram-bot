@@ -26,12 +26,15 @@ let msd;
 //common used functions
 //start function 
 let start = (chatId, msgId)=>{
-  let inline = mongo.inline("get,41", variable.subject["41"]).push([[{text:"3rd 2nd", callback_data:"get,32" }]])
-  if(msgId){bot.editMessageReplyMarkup({inline_keyboard : inline},{chat_id: chatId, message_id: msgId})
+  let arr = mongo.inline("get,41", variable.subject["41"])
+  arr.push([[{text:"3rd 2nd", callback_data:"get,32" }]])
+  console.log(arr)
+  if(msgId){bot.editMessageReplyMarkup({inline_keyboard : arr},{chat_id: chatId, message_id: msgId})
   }else{
-    bot.sendMessage(chatId,"Enjoy", {reply_markup:{inline_keyboard: inline}})
+    bot.sendMessage(chatId,"Enjoy", {reply_markup:{inline_keyboard: ar}})
   }
 }
+// start(14, 15)
 //empty markup function
 let empty = (chatId, msgId) =>{
   bot.editMessageReplyMarkup({inline_keyboard : [[]]},{chat_id: chatId, message_id: msgId})
@@ -198,7 +201,7 @@ bot.on('message', (msg)=>{
       bot.sendMessage(chatId,"Latest", {reply_markup: {inline_keyboard: val, chat_id: chatId, message_id: msgId}})
     })
   }else if(text === "/add"){
-    bot.sendMessage(chatId,"add", {reply_markup:{ inline_keyboard : mongo.start("add,32"),chat_id: chatId, message_id: msgId}})
+    bot.sendMessage(chatId,"add", {reply_markup:{ inline_keyboard : mongo.inline("add,41", variable.subject[41]),chat_id: chatId, message_id: msgId}})
   }else if(text === "/info"){ 
       bot.sendMessage(chatId, variable.info)
   }
