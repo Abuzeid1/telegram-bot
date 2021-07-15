@@ -5,5 +5,5 @@ module.exports.info = ` - تقدر تشوف آخر محاضرات أو سكاش�
 
                     `
 module.exports.subject = {"32": ['bacteriology', 'clinical', 'parasitology', 'pathology', 'pharmacology', 'poultry', 'virology']
-                         ,"41": ['applied anatomy',"birthology","dairy",'fish','forensic medicine',"internal",'pathology','surgery']
+                         ,"41": ['applied anatomy',"birthology","dairy",'fish diseases','forensic medicine',"internal",'pathology','surgery']
                     }
