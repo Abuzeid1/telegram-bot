@@ -116,7 +116,7 @@ bot.on('callback_query', (query)=>{
         // asking for permission msg telegram
         bot.sendMessage(chatId, "Done it will take some time untill files appear");
         let cd = `g,${chatId},${datarr.toString()}`
-        let xz = JSON.stringify(cd)
+        let xz = cd;
         bot.forwardMessage(process.env.userId, chatId, msd);
         bot.sendMessage(process.env.userId, "grant permission " + xz + query.from.first_name +"  "+ query.from.last_name,
          {reply_markup: {inline_keyboard: [
@@ -145,8 +145,6 @@ bot.on('callback_query', (query)=>{
   // granting permission command
   else if(datarr[0]==='g'){
     empty(chatId, msgId)
-   
-    
     let pid = datarr[1];
     let m  = datarr.slice[2]
     mongo.grantpermission(pid, m).then((value)=>{});
