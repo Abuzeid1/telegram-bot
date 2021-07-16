@@ -31,10 +31,10 @@ let start = (chatId, msgId)=>{
   let index = -1;
   for(let x of variable.subject["41"]){
     if(n%2===0){
-      markup.push([])
+      arr.push([])
       index += 1;
     }
-    markup[index].push({text:x, callback_data:"get,41,"+n })
+    arr[index].push({text:x, callback_data:"get,41,"+n })
     n+=1
   }
   
