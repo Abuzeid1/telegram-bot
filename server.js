@@ -26,7 +26,18 @@ let msd;
 //common used functions
 //start function 
 let start = (chatId, msgId)=>{
-  let arr = mongo.inline("get,41", variable.subject["41"])
+  let arr = [];
+  let n = 0;
+  let index = -1;
+  for(let x of variable.subject["41"]){
+    if(n%2===0){
+      markup.push([])
+      index += 1;
+    }
+    markup[index].push({text:x, callback_data:"get,41,"+n })
+    n+=1
+  }
+  
   arr.push([{text:"3rd year 2nd term", callback_data:"get,32" }])
   // console.log(arr)
   if(msgId){bot.editMessageReplyMarkup({inline_keyboard : arr},{chat_id: chatId, message_id: msgId})
@@ -104,7 +115,7 @@ bot.on('callback_query', (query)=>{
       }else{
         // asking for permission msg telegram
         bot.sendMessage(chatId, "Done it will take some time untill files appear");
-        let cd = ["g" , chatId,datarr]
+        let cd = `g,${chatId},${datarr.toString()}`
         let xz = JSON.stringify(cd)
         bot.forwardMessage(process.env.userId, chatId, msd);
         bot.sendMessage(process.env.userId, "grant permission " + xz + query.from.first_name +"  "+ query.from.last_name,
@@ -132,12 +143,12 @@ bot.on('callback_query', (query)=>{
     })} 
 
   // granting permission command
-  else if(datarr[0]==='["g"'){
+  else if(datarr[0]==='g'){
     empty(chatId, msgId)
-    let x = JSON.parse(data)
-    x.shift()
-    let pid = x[0];
-    let m  = x[1]
+   
+    
+    let pid = datarr[1];
+    let m  = datarr.slice[2]
     mongo.grantpermission(pid, m).then((value)=>{});
     //no answer reply 
   }else if(datarr[0]==="noanswer"){
