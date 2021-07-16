@@ -5,16 +5,16 @@ const express = require("express");
 const TelegramBot = require('node-telegram-bot-api');
 const variable = require("./variable.js")
 const token = process.env.token;
-const bot = new TelegramBot(token,{polling: true});
+const bot = new TelegramBot(token);
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
  
 // respond to api request
-// app.post('/bot' , (req, res) => {
-//   bot.processUpdate(req.body);
-//   res.sendStatus(200);
-// });
+app.post('/bot' , (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
+});
 
 // global variables
 let user = {};
