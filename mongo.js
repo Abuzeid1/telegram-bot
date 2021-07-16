@@ -1,6 +1,7 @@
 
 require('dotenv').config()
 const {MongoClient} = require("mongodb")
+const variable = require("./variable.js")
 const uri = process.env.uri
 const client = new MongoClient(uri, {
   useNewUrlParser: true,useUnifiedTopology: true,});
@@ -14,8 +15,8 @@ let con =  async ()=>{
   }else{await client.connect()}}
 
 // list creator
-module.exports.inline = (com,arr)=>{
-  let markup = [[]]
+module.exports.inline = (com,arr, short)=>{
+  let markup = []
   let div 
   if(arr.length>0){div=1}
   if(arr.length>4){div=2}
@@ -23,15 +24,20 @@ module.exports.inline = (com,arr)=>{
   if(arr.length>12){div=4}
   if(!com){com =""}
   
-    let x = 0;
+    let x = -1;
     let counter = 0;
     for(let n of arr){
-      if(counter%div===0 && counter!=0){
+      if(counter%div===0 ){
         markup.push([])
         x += 1
       }
+      if(short == true){
+        markup[x].push({text:n,callback_data:com+","+counter})
+      }else{
+        markup[x].push({text:n,callback_data:com+","+n})
+      }
       counter += 1
-      markup[x].push({text:n,callback_data:com+","+n})
+      
     }
  
 
@@ -128,7 +134,10 @@ module.exports.new= async(xmo)=>{
     
     for(let n of doc.arr){
       let x = n.toString()
-      farr.push([{text: x.replaceAll(",", " "), callback_data:"get," +x}])
+      n.shift()
+      n[0]= variable.subject[41][n[0]]
+      let m = n.toString()
+      farr.push([{text: m.replaceAll(",", " "), callback_data:"get," +x}])
     }
     farr.push([{text: "<<back", callback_data:"get"}])
     return farr

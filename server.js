@@ -5,16 +5,16 @@ const express = require("express");
 const TelegramBot = require('node-telegram-bot-api');
 const variable = require("./variable.js")
 const token = process.env.token;
-const bot = new TelegramBot(token);
+const bot = new TelegramBot(token,{polling: true});
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
  
 // respond to api request
-app.post('/bot' , (req, res) => {
-  bot.processUpdate(req.body);
-  res.sendStatus(200);
-});
+// app.post('/bot' , (req, res) => {
+//   bot.processUpdate(req.body);
+//   res.sendStatus(200);
+// });
 
 // global variables
 let user = {};
@@ -26,17 +26,8 @@ let msd;
 //common used functions
 //start function 
 let start = (chatId, msgId)=>{
-  let arr = [];
-  let n = 0;
-  let index = -1;
-  for(let x of variable.subject["41"]){
-    if(n%2===0){
-      arr.push([])
-      index += 1;
-    }
-    arr[index].push({text:x, callback_data:"get,41,"+n })
-    n+=1
-  }
+  let arr = mongo.inline("get,41", variable.subject["41"], true)
+ 
   
   arr.push([{text:"3rd year 2nd term", callback_data:"get,32" }])
   // console.log(arr)
@@ -115,8 +106,8 @@ bot.on('callback_query', (query)=>{
       }else{
         // asking for permission msg telegram
         bot.sendMessage(chatId, "Done it will take some time untill files appear");
-        let cd = `g,${chatId},${datarr.toString()}`
-        let xz = cd;
+        
+        let xz =  `g,${chatId},${datarr.toString()}`
         bot.forwardMessage(process.env.userId, chatId, msd);
         bot.sendMessage(process.env.userId, "grant permission " + xz + query.from.first_name +"  "+ query.from.last_name,
          {reply_markup: {inline_keyboard: [
@@ -146,7 +137,8 @@ bot.on('callback_query', (query)=>{
   else if(datarr[0]==='g'){
     empty(chatId, msgId)
     let pid = datarr[1];
-    let m  = datarr.slice[2]
+    let m  = datarr.slice(2)
+    console.log(m)
     mongo.grantpermission(pid, m).then((value)=>{});
     //no answer reply 
   }else if(datarr[0]==="noanswer"){
@@ -221,7 +213,7 @@ bot.on('message', (msg)=>{
       bot.sendMessage(chatId,"Latest", {reply_markup: {inline_keyboard: val}})
     })
   }else if(text === "/add"){
-    bot.sendMessage(chatId,"add", {reply_markup:{ inline_keyboard : mongo.inline("add,41", variable.subject["41"])}})
+    bot.sendMessage(chatId,"add", {reply_markup:{ inline_keyboard : mongo.inline("add,41", variable.subject["41"], true)}})
   }else if(text === "/info"){ 
       bot.sendMessage(chatId, variable.info)
   }
