@@ -1,4 +1,4 @@
-telegram bot to share lectures media to the students
+telegram bot to share lectures data to the students
 
 it is built with 
 -Node.js
