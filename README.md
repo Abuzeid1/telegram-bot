@@ -1,4 +1,5 @@
-# telegram bot to share lectures data to the students
+# telegram bot
+used to share lectures data among college students in easy and organised manner
 
 ### it is built with 
 - Node.js
