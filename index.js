@@ -14,6 +14,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/',(req, res) => {
+  res.send("Hello World")
+})
+
 // respond to api request webhook
 app.post('/bot', (req, res) => {
   bot.processUpdate(req.body);
