@@ -1,5 +1,5 @@
 # telegram bot
-used to share lectures data among college students in easy and organised manner
+used to help students organize and reach data in easy and timely manner
 
 ### it is built with 
 - Node.js
@@ -8,8 +8,8 @@ used to share lectures data among college students in easy and organised manner
 
 ### featurs 
 * users can download data from the /start list 
-* users can view latest items added through /new
-* users can upload data under a name of their choosing through /add command
+* users can view latest items added through /latest
+* users can upload data under a name of their choosing through /add 
 * on the first time uploading a permission must be granted by admin
 
 
