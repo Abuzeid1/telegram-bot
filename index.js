@@ -8,7 +8,7 @@ const express = require("express");
 const TelegramBot = require('node-telegram-bot-api');
 
 const token = process.env.token;
-const bot = new TelegramBot(token, { polling: true });
+const bot =  process.env.local === "true" ?  new TelegramBot(token, { polling: true }) :  new TelegramBot(token)
 
 const app = express();
 app.use(express.json());
@@ -82,7 +82,7 @@ bot.on('callback_query', (query) => {
   let msgId = query.message.message_id
   const datarr = data.split(",")
   
-  console.log(data)
+  
   //user file data for 
   if (datarr[0] === "add" || datarr[0] === "addx") { user[chatId] = datarr }
 

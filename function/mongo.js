@@ -2,14 +2,11 @@
 require('dotenv').config()
 const { MongoClient } = require("mongodb")
 const variable = require("./variable.js")
-const markup = require('./markup.js')
 
 const uri = process.env.uri
 const client = new MongoClient(uri, {
   useNewUrlParser: true, useUnifiedTopology: true,
 });
-
-
 
 
 //manage connection mongodb
@@ -41,9 +38,6 @@ module.exports.read = async (arr) => {
     } else {
       // read from database
       await con();
-      console.log({ read: true })
-
-
       const db = client.db(arr[0]);
       // types
       const dbo = db.collection(arr[1]);
@@ -54,7 +48,7 @@ module.exports.read = async (arr) => {
         let doc = await dbo.findOne({ _id: arr[2] })
 
         if (arr.length === 3) {
-          console.log({ nums: true })
+          
           let nums = Object.keys(doc).filter(item => item != "_id")
 
           return nums

@@ -24,18 +24,18 @@ module.exports.list = (com, arr) => {
     if (com.length > 2 ) {
         let arr = com.slice(0)
 
-        console.log({fun: true})
+        
         arr.pop()
         arr = arr.toString()
         
         markup.push([{ text: "<< Back", callback_data: arr }])
     }
-    console.log({commark: com})
+   
     if (com[0] === 'add' && com.length > 2 ) {
-        console.log(markup[markup.length-2])
+        
         com.shift()
         markup[markup.length - 1].push({ text: "another", callback_data: "addx," + com.toString() })
-        console.log({lastelemetn: markup[markup.length-1]})
+        
     }
    
     return markup
