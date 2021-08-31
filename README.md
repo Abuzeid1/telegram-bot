@@ -1,5 +1,5 @@
 # telegram bot
-used to help students organize and reach data in easy and timely manner
+helps students to organize and reach data in easy and organized manner used by around 200+ students 
 
 ### Built with 
 - Node.js
