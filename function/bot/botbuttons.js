@@ -25,13 +25,12 @@ let botbuttons = (query) => {
 
     if (datarr.length === 5 && datarr[0] === "get") {
       console.log({
-        firstname: query.from.first_name,
-        lastname: query.from.last_name,
+        Name: query.from.first_name + "  " + query.from.last_name,
         data: {
-          year: data[1],
-          subject: subject[41][data[2] * 1],
-          type: data[3],
-          num: data[4],
+          year: datarr[1],
+          subject: subject[41][datarr[2] * 1],
+          type: datarr[3],
+          num: datarr[4],
         },
       });
 
@@ -89,8 +88,7 @@ let botbuttons = (query) => {
           Subject: ${subject[41][datarr[1] * 1]}
           Type: ${datarr[2]}
           Number: ${datarr[3]}
-          First Name: ${query.from.first_name}
-          Last Name: ${query.from.last_name}
+          Name: ${query.from.first_name}  ${query.from.last_name}
           UserID: ${chatId}
         `
         );
@@ -108,8 +106,7 @@ let botbuttons = (query) => {
           Subject: ${subject[41][datarr[1] * 1]}
           Type: ${datarr[2]}
           Number: ${datarr[3]}
-          First Name: ${query.from.first_name}
-          Last Name: ${query.from.last_name}
+          Name: ${query.from.first_name}  ${query.from.last_name}
           UserID: ${chatId}
           `,
           [
