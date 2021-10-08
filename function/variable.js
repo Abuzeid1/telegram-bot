@@ -1,9 +1,31 @@
-module.exports.info = ` - تقدر تشوف آخر محاضرات أو سكاشن نزلت من خلال /latest
-- في أول مرة لرفع المحاضرة قد يتأخر نزولها على البوت لبعض الوقت (يوم على الأكثر)
-- اللي بيرفع أي ورق مش بيكون معروف، بيختار أي اسم وينزل الورق عليه
-- لو فيه خطأ في المحاضرة وعاوز تعدلها.. تضغط على /add وتختار المحاضرة من تاني وترفع الورق بعد التعديل
+const info = `- لاضافة محتوي /add
+- اللي بيرفع محتوي بيكون معروف فقط بالاسم الاختاره
+- لتعديل محتوي ضيفه من جديد
+- في أول مرة رفع محتوي قد يتأخر ظهوره لبعض الوقت (يوم على الأكثر)
+- داتا تالتة الترم الثاني /old
+- آخر محتوي تم اضافته /latest
+- القائمة الرئيسية /start `;
 
-                    `
-module.exports.subject = {"32": ['bacteriology', 'clinical', 'parasitology', 'pathology', 'pharmacology', 'poultry', 'virology']
-                         ,"41": ['applied anatomy',"birthology","dairy",'fish diseases','forensic medicine',"internal",'pathology','surgery']
-                    }
+const subject = {
+  32: [
+    "Bacteriology",
+    "Blinical",
+    "Parasitology",
+    "Pathology",
+    "Pharmacology",
+    "Poultry",
+    "Virology",
+  ],
+  41: [
+    "Applied Anatomy",
+    "Fish",
+    "Internal",
+    "Milk",
+    "Pathology",
+    "Reproduction",
+    "Surgery",
+    "Toxo",
+  ],
+};
+
+export { info, subject };
