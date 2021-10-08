@@ -3,6 +3,7 @@ import { write, read, grantpermission, permission, copy } from "../mongo.js";
 import { createMedia, list } from "../markup.js";
 import { sendMediaFiles, sendMsg, editMarkup, empty } from "./botfunctions.js";
 import { user, userdata, msd } from "./bot.js";
+import { subject } from "../variable.js";
 
 //common used functions
 // edit markup
@@ -26,7 +27,12 @@ let botbuttons = (query) => {
       console.log({
         firstname: query.from.first_name,
         lastname: query.from.last_name,
-        data: data,
+        data: {
+          year: data[1],
+          subject: subject[41][data[2] * 1],
+          type: data[3],
+          num: data[4],
+        },
       });
 
       sendMsg(chatId, datarr[4]);
@@ -76,28 +82,36 @@ let botbuttons = (query) => {
         });
 
         //notification  msg to admin
-        let useinforr = [
-          chatId,
-          datarr,
-          query.from.first_name,
-          query.from.last_name,
-        ];
-        let userinfo = JSON.stringify(useinforr);
-        sendMsg(process.env.userId, userinfo);
+
+        sendMsg(
+          process.env.userId,
+          `new data
+          Subject: ${subject[41][datarr[1] * 1]}
+          Type: ${datarr[2]}
+          Number: ${datarr[3]}
+          First Name: ${query.from.first_name}
+          Last Name: ${query.from.last_name}
+          UserID: ${chatId}
+        `
+        );
       } else {
         // asking for permission from admin
         sendMsg(chatId, "Done it will take some time untill files appear");
 
         let xz = `g,${chatId},${datarr.toString()}`;
-        bot.forwardMessage(process.env.userId, chatId, msd);
+        bot.forwardMessage(process.env.userId, chatId, msd[chatId]);
+        delete msd[chatId];
 
         sendMsg(
           process.env.userId,
-          "grant permission " +
-            xz +
-            query.from.first_name +
-            "  " +
-            query.from.last_name,
+          `grant permission
+          Subject: ${subject[41][datarr[1] * 1]}
+          Type: ${datarr[2]}
+          Number: ${datarr[3]}
+          First Name: ${query.from.first_name}
+          Last Name: ${query.from.last_name}
+          UserID: ${chatId}
+          `,
           [
             [{ text: "yes", callback_data: xz }],
             [{ text: "no", callback_data: "noanswer" }],

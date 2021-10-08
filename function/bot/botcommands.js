@@ -7,6 +7,7 @@ import { user, userdata, msd } from "./bot.js";
 let botcommands = (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
+
   let command;
 
   if (user != {}) {
@@ -35,7 +36,8 @@ let botcommands = (msg) => {
     if (userdata[chatId] != undefined) {
       filearr = userdata[chatId];
     }
-    msd = msg.message_id;
+
+    msd[chatId] = msg.message_id;
 
     if (filearr.length === 0) {
       var calldat = command.slice(1);
@@ -58,7 +60,9 @@ let botcommands = (msg) => {
     } else if (msg.voice) {
       filearr.push([msg.voice.file_id, "voice"]);
     }
+
     userdata[chatId] = filearr;
+
     //receiving text
   } else if (command != undefined && command[0] === "addx") {
     command[0] = "add";

@@ -9,7 +9,7 @@ const info = `- لاضافة محتوي /add
 const subject = {
   32: [
     "Bacteriology",
-    "Blinical",
+    "Clinical",
     "Parasitology",
     "Pathology",
     "Pharmacology",
