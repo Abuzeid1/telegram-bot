@@ -1,6 +1,7 @@
 // create markup for telegram list
-let list = (com, arr) => {
+let list = (com, arr = []) => {
   let markup = [];
+
   let div = Math.ceil(arr.length / 4);
   com = com.split(",");
 
@@ -39,13 +40,13 @@ let list = (com, arr) => {
 };
 
 // sort media to be sent in a media group
-let media = ({ arr, type }) => {
+let media = ({ arr = [{}], type }) => {
   let group = arr.map((item) => ({ type, media: item }));
   return group;
 };
 
 //sort media ids to store in a media group
-let createMedia = (arr) => {
+let createMedia = (arr = []) => {
   let resultarr = [];
   arr.forEach((item) => {
     let index = resultarr.findIndex((el) => {

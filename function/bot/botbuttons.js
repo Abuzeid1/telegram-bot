@@ -28,7 +28,7 @@ let botbuttons = (query) => {
         Name: query.from.first_name + "  " + query.from.last_name,
         data: {
           year: datarr[1],
-          subject: subject[41][datarr[2] * 1],
+          subject: subject[datarr[1] * 1][datarr[2] * 1],
           type: datarr[3],
           num: datarr[4],
         },
