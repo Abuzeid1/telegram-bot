@@ -24,13 +24,14 @@ let botbuttons = (query) => {
     // sending files
 
     if (datarr.length === 5 && datarr[0] === "get") {
-      const logData = {
-        Name: query.from.first_name + "  " + query.from.last_name,
-        year: datarr[1],
-        Subject: subject[datarr[1] * 1][datarr[2] * 1] || datarr[2],
-        Type: datarr[3],
-        Number: datarr[4],
-      };
+      const logData = [
+        "data",
+        query.from.first_name + "  " + query.from.last_name,
+        datarr[1],
+        subject[datarr[1] * 1][datarr[2] * 1] || datarr[2],
+        datarr[3],
+        datarr[4],
+      ];
 
       console.log(logData);
 
