@@ -24,13 +24,15 @@ let botbuttons = (query) => {
     // sending files
 
     if (datarr.length === 5 && datarr[0] === "get") {
-      console.log(
-        `Name: ${query.from.first_name + "  " + query.from.last_name}
-         Year: ${datarr[1]}  Subject: ${
-          subject[datarr[1] * 1][datarr[2] * 1] || datarr[2]
-        }
-         Type: ${datarr[3]}  Number: ${datarr[4]}`
-      );
+      const logData = {
+        Name: query.from.first_name + "  " + query.from.last_name,
+        year: datarr[1],
+        Subject: subject[datarr[1] * 1][datarr[2] * 1] || datarr[2],
+        Type: datarr[3],
+        Number: datarr[4],
+      };
+
+      console.log(logData);
 
       sendMsg(chatId, datarr[4]);
       read(datarr).then((val) => {
