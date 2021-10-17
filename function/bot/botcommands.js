@@ -7,9 +7,7 @@ import { user, userdata, msd } from "./bot.js";
 let botcommands = (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
-
   let command;
-
   if (user != {}) {
     command = user[chatId];
   }

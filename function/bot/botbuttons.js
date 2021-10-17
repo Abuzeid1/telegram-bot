@@ -1,5 +1,6 @@
 import { bot } from "./bot.js";
-import { write, read, grantpermission, permission, copy } from "../mongo.js";
+import { write, read, writeLog } from "../mongo.js";
+import { grantpermission, permission, copy } from "../permission.js";
 import { createMedia, list } from "../markup.js";
 import { sendMediaFiles, sendMsg, editMarkup, empty } from "./botfunctions.js";
 import { user, userdata, msd } from "./bot.js";
@@ -24,14 +25,14 @@ let botbuttons = (query) => {
     // sending files
 
     if (datarr.length === 5 && datarr[0] === "get") {
-      const logData = [
-        "data",
-        query.from.first_name + "  " + query.from.last_name,
-        datarr[1],
-        subject[datarr[1] * 1][datarr[2] * 1] || datarr[2],
-        datarr[3],
-        datarr[4],
-      ];
+      let name =
+        query.from.first_name || "" + "  " + query.from.last_name || "";
+      let year = datarr[1];
+      let arrsubject = subject[datarr[1] * 1][datarr[2] * 1] || datarr[2];
+      let arrtype = datarr[3];
+      let number = datarr[4];
+      const logData = ["data", name, year, arrsubject, arrtype, number];
+      writeLog(name, year, arrsubject, arrtype, number);
 
       console.log(logData);
 

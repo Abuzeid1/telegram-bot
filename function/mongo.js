@@ -1,14 +1,5 @@
-import dotenv from "dotenv";
-import mongodb from "mongodb";
-const MongoClient = mongodb.MongoClient;
 import { subject } from "./variable.js";
-dotenv.config();
-const uri = process.env.uri;
-const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
+import { client } from "../index.js";
 //manage connection mongodb
 let con = async () => {
   if (client.isConnected()) {
@@ -18,16 +9,17 @@ let con = async () => {
 };
 
 //write new document
-let write = async (datarr, files) => {
+let write = async (arr, files) => {
   await con();
-  const db = client.db(datarr[0]);
-  const dbco = db.collection(datarr[1]);
-  await dbco.updateOne(
-    { _id: datarr[2] },
-    { $set: { [datarr[3]]: files } },
-    { upsert: true }
-  );
-  await newitems(datarr).then();
+  const dbo = client.db("data").collection(arr[0]);
+
+  await dbo
+    .updateOne(
+      { year: arr[0], subject: arr[1], type: arr[2], number: arr[3] },
+      { $set: { arr: files } },
+      { upsert: true }
+    )
+    .then((result) => {});
   return true;
 };
 
@@ -40,126 +32,73 @@ let read = async (arr) => {
     } else {
       // read from database
       await con();
-      const db = client.db(arr[0]);
+      const db = client.db("data");
       // types
-      const dbo = db.collection(arr[1]);
+      const dbo = db.collection(arr[0]);
+
       if (arr.length === 2) {
-        const types = await dbo
-          .find({}, { _id: 1 })
-          .map(function (item) {
-            return item._id;
-          })
-          .toArray();
-        return types;
-      } else {
-        let doc = await dbo.findOne({ _id: arr[2] });
+        const pipline = [
+          { $match: { subject: arr[1] } },
+          { $group: { _id: "$type" } },
+          { $sort: { _id: -1 } },
+        ];
+        let types = await dbo.aggregate(pipline).toArray();
+        return types.map(({ _id }) => _id);
+      } else if (arr.length === 3) {
+        const pipline = [
+          { $match: { subject: arr[1], type: arr[2] } },
+          { $sort: { date: 1 } },
+          { $project: { number: 1, _id: 0 } },
+        ];
 
-        if (arr.length === 3) {
-          let nums = Object.keys(doc).filter((item) => item != "_id");
+        let nums = await dbo.aggregate(pipline).toArray();
+        console.log(nums.map(({ number }) => number));
+        return nums.map(({ number }) => number);
+      } // return media ids
+      else if (arr.length === 4) {
+        const doc = await dbo.findOne({
+          subject: arr[1],
+          type: arr[2],
+          number: arr[3],
+        });
 
-          return nums;
-        } // return media ids
-        else if (arr.length === 4) {
-          return doc[arr[3]];
-        }
+        return doc.arr;
       }
     }
   } catch (err) {
-    return ["1"];
+    return [];
   }
 };
 
 //create new list
-let newitems = async (newItem) => {
+let newitems = async () => {
   await con();
-  const db = client.db("new");
-  const dbco = db.collection("new");
-  let newArr = [];
+  const dbo = client.db("data").collection("41");
+  const pipline = [{ $sort: { _id: -1 } }, { $limit: 8 }];
+  let arr = await dbo.aggregate(pipline).toArray();
+  arr = arr.map((item) => {
+    return [
+      {
+        text: `${subject[41][item.subject * 1]}  ${item.type}  ${item.number}`,
+        callback_data: `get,41,${item.subject},${item.type},${item.number}`,
+      },
+    ];
+  });
+  return arr;
+};
 
-  if (!newItem) {
-    let doc = await dbco.findOne({ _id: "new" });
-
-    doc.arr.forEach((element) => {
-      let text = element.slice(1);
-
-      text[0] = subject[element[0]][element[1]];
-      text = text.toString();
-
-      newArr.push([
-        {
-          text: text.replaceAll(",", " "),
-          callback_data: "get," + element.toString(),
-        },
-      ]);
-    });
-    newArr.push([{ text: "<<back", callback_data: "get,32" }]);
-    return newArr;
-  } else {
-    dbco.updateOne({ _id: "new" }, { $pop: { arr: 1 } });
-    dbco.updateOne(
-      { _id: "new" },
-      { $push: { arr: { $each: [newItem], $position: 0 } } }
-    );
-    return;
-  }
+let writeLog = async (name, year, subject, type, number) => {
+  await con();
+  let dbo = await client.db("data").collection("logs");
+  dbo.insertOne({
+    name,
+    year,
+    subject,
+    type,
+    number,
+    date: new Date(),
+  });
 };
 
 //granting permission
-
-let grantpermission = async (id, arr) => {
-  await con();
-  const db = client.db("permission");
-  const dbco = db.collection(id.toString());
-  dbco.updateOne(
-    { _id: arr[0] },
-    { $push: { [arr[1]]: arr[2] } },
-    { upsert: true }
-  );
-  retrieve(id, arr).then((val) => {
-    write(arr, val);
-  });
-  return true;
-};
-
-//check permission
-let permission = async (id, arr) => {
-  await con();
-  const db = client.db("permission");
-  const dbco = db.collection(id.toString());
-  const doc = await dbco.findOne({ _id: arr[0] });
-
-  if (doc) {
-    let check = doc[arr[1]];
-
-    if (check) {
-      if (check.indexOf(arr[2]) != -1) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-  return false;
-};
-// create temporary memory untill given permission
-let copy = async (arr, files, id) => {
-  await con();
-  const db = client.db("copy");
-  const dbco = db.collection(id.toString());
-  if (!(await dbco.findOne({ arr: arr }))) {
-    dbco.insertOne({ arr: arr, files: files });
-    return true;
-  }
-  return false;
-};
-
-// retrive from temporary file after given permisssion
-let retrieve = async (id, arr) => {
-  await con();
-  const db = client.db("copy");
-  const dbco = db.collection(id.toString());
-  let doc = await dbco.findOne({ arr: arr });
-  return doc.files;
-};
-
-export { write, read, grantpermission, permission, copy, newitems };
+export { write, read, newitems, writeLog };
