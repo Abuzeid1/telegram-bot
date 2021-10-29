@@ -13,7 +13,7 @@ let botcommands = (msg) => {
   }
 
   if (text === "/start") {
-    sendMsg(chatId, "get", list("get,41", subject["41"]));
+    sendMsg(chatId, "Enjoy", list("get,41", subject["41"]));
     //receiving files
   } else if (text === "/latest") {
     newitems().then((val) => {

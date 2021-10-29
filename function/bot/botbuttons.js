@@ -14,7 +14,7 @@ let botbuttons = (query) => {
   const chatId = query.message.chat.id;
   let msgId = query.message.message_id;
   const datarr = data.split(",");
-
+  const name = `${query.from.first_name || ""}  ${query.from.last_name || ""}`;
   //user file data mangement
   if (datarr[0] === "add" || datarr[0] === "addx") {
     user[chatId] = datarr;
@@ -25,8 +25,6 @@ let botbuttons = (query) => {
     // sending files
 
     if (datarr.length === 5 && datarr[0] === "get") {
-      let name =
-        query.from.first_name || "" + "  " + query.from.last_name || "";
       let year = datarr[1];
       let arrsubject = subject[datarr[1] * 1][datarr[2] * 1] || datarr[2];
       let arrtype = datarr[3];
@@ -90,7 +88,7 @@ let botbuttons = (query) => {
           Subject: ${subject[41][datarr[1] * 1]}
           Type: ${datarr[2]}
           Number: ${datarr[3]}
-          Name: ${query.from.first_name}  ${query.from.last_name}
+          Name: ${name}
           UserID: ${chatId}
         `
         );
@@ -108,7 +106,7 @@ let botbuttons = (query) => {
           Subject: ${subject[41][datarr[1] * 1]}
           Type: ${datarr[2]}
           Number: ${datarr[3]}
-          Name: ${query.from.first_name}  ${query.from.last_name}
+          Name: ${name}
           UserID: ${chatId}
           `,
           [

@@ -16,7 +16,7 @@ let write = async (arr, files) => {
   await dbo
     .updateOne(
       { year: arr[0], subject: arr[1], type: arr[2], number: arr[3] },
-      { $set: { arr: files } },
+      { $set: { arr: files, date: new Date() } },
       { upsert: true }
     )
     .then((result) => {});
@@ -52,7 +52,7 @@ let read = async (arr) => {
         ];
 
         let nums = await dbo.aggregate(pipline).toArray();
-        console.log(nums.map(({ number }) => number));
+
         return nums.map(({ number }) => number);
       } // return media ids
       else if (arr.length === 4) {
