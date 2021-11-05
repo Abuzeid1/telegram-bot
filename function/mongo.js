@@ -13,13 +13,11 @@ let write = async (arr, files) => {
   await con();
   const dbo = client.db("data").collection(arr[0]);
 
-  await dbo
-    .updateOne(
-      { year: arr[0], subject: arr[1], type: arr[2], number: arr[3] },
-      { $set: { arr: files, date: new Date() } },
-      { upsert: true }
-    )
-    .then((result) => {});
+  await dbo.updateOne(
+    { year: arr[0], subject: arr[1], type: arr[2], number: arr[3] },
+    { $set: { arr: files, date: new Date() } },
+    { upsert: true }
+  );
   return true;
 };
 
@@ -74,7 +72,7 @@ let read = async (arr) => {
 let newitems = async () => {
   await con();
   const dbo = client.db("data").collection("41");
-  const pipline = [{ $sort: { _id: -1 } }, { $limit: 8 }];
+  const pipline = [{ $sort: { date: -1 } }, { $limit: 8 }];
   let arr = await dbo.aggregate(pipline).toArray();
   arr = arr.map((item) => {
     return [
