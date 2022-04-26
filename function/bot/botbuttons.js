@@ -85,7 +85,7 @@ let botbuttons = (query) => {
         sendMsg(
           process.env.userId,
           `new data
-          Subject: ${subject[41][datarr[1] * 1]}
+          Subject: ${subject[42][datarr[1] * 1]}
           Type: ${datarr[2]}
           Number: ${datarr[3]}
           Name: ${name}
@@ -103,7 +103,7 @@ let botbuttons = (query) => {
         sendMsg(
           process.env.userId,
           `grant permission
-          Subject: ${subject[41][datarr[1] * 1]}
+          Subject: ${subject[42][datarr[1] * 1]}
           Type: ${datarr[2]}
           Number: ${datarr[3]}
           Name: ${name}

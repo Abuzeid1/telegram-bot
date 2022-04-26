@@ -13,14 +13,14 @@ let botcommands = (msg) => {
   }
 
   if (text === "/start") {
-    sendMsg(chatId, "Enjoy", list("get,41", subject["41"]));
+    sendMsg(chatId, "Enjoy", list("get,42", subject["42"]));
     //receiving files
   } else if (text === "/latest") {
     newitems().then((val) => {
       sendMsg(chatId, "Latest", val);
     });
   } else if (text === "/add") {
-    sendMsg(chatId, "add", list("add,41", subject["41"]));
+    sendMsg(chatId, "add", list("add,42", subject["42"]));
   } else if (text === "/info") {
     sendMsg(chatId, info);
   } else if (text === "/old") {

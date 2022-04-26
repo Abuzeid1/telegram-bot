@@ -26,6 +26,16 @@ const subject = {
     "Surgery",
     "Toxo",
   ],
+  42: [
+    "Anatomy",
+    "Fish",
+    "Internal",
+    "Milk",
+    "Economy",
+    "theriobiology",
+    "Surgery",
+    "Forensic",
+  ],
 };
 
 export { info, subject };
