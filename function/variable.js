@@ -32,7 +32,7 @@ const subject = {
     "Internal",
     "Milk",
     "Economy",
-    "theriobiology",
+    "theriogenology",
     "Surgery",
     "Forensic",
   ],
